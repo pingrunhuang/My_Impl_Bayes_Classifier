@@ -1,13 +1,20 @@
 import numpy as np
-from sklearn import datasets
 
-data = datasets.load_iris()
+"""
+Personal thought:
+I was trying to implement the bayes classifier on a numerical dataset at the beginning.
+But the problem with this is that the value of a numarical dataset is not that common to be the same (means 0.001 is not that common to be shown on feature 1)
+So I think that is the reason why bayes is commonly used in NLP. 
+"""
 
 class My_Naive_Bayes_Classifier():
 	self.score = null
 	def __init__(self, data, target):
 		self.data = data
 		self.target = target
+		# xi_cj denote { c1 :{x1:0,...xn:0}, c2:{x1:0,...xn:0} ... cm:{x1:0,...xn:0} }
+		self.xi_cj = { cj :{} for cj in set(target) }
+		self.cj = {x:0 for x in set(target)}
 
 	def fit(self):
 		'''
@@ -19,16 +26,9 @@ class My_Naive_Bayes_Classifier():
 		if len(self.data) != len(self.target):
 			raise Execption("data and target is not compatible")
 
-		self.cj={}
-		self.xi_cj={}
-		for index, feature in enumberate(self.data):
+		for index, feature in enumerate(self.data):
 			# calculate the P(cj)
-			if self.target[index] not in self.cj:
-				self.cj[self.target[index]] = 1
-				# initialize the dictionary of conditional possibilities
-				self.xi_cj[self.target[index]] = {}
-			else:
-				self.cj[self.target[index]] += 1
+			self.cj[self.target[index]] += 1
 
 			for xi in feature:
 				if xi not in self.xi_cj[self.target[index]]:
@@ -38,8 +38,18 @@ class My_Naive_Bayes_Classifier():
 
 		self.cj = self.cj / len(self.target)
 		for x in xi_cj:
-			self.xi_cj[x] = self.xi_cj[x] / len(self.xi_cj[x])
+			for key, value in self.xi_cj[x].items():
+				self.xi_cj[x][key] = value / len(self.xi_cj[x])
 
 	def predict(self, test_data):
-		pass
+		probability = 1
+		result = {}
+		for cj in self.xi_cj:
+			for xi in test_data:
+				result = result * cj[xi]
+			result[cj] = result
+			result = 1
+		winner = [key for key, value in result.values() if value == max(result.values())]
+		print(test_data, ' belongs to class ', winner)
+		return winner, result[winner]
 
