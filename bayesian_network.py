@@ -14,7 +14,7 @@ class BayesianNetwork(ABC):
     def fit(self):
         raise NotImplementedError("Please implement the fit method first")
 
-    def classify(self):
+    def classify(self, test_data):
         raise NotImplementedError("Please implement the classify method first")
 
 
@@ -31,7 +31,6 @@ class AsiaBayesianNetwork(BayesianNetwork):
         pass
     
     def classify(self, test_data):
-
         pass
 
     def make_dependencies(self, is_draw=True):
@@ -46,10 +45,9 @@ class AsiaBayesianNetwork(BayesianNetwork):
     def echo(self):
         print(self.data.head(10))
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     asia = AsiaBayesianNetwork()
     asia.echo()
 
 
-    
